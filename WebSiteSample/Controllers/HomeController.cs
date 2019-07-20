@@ -70,6 +70,12 @@ namespace WebSiteSample.Controllers
         [Authorize(Policy = "roleTest")]
         public async Task<IActionResult> AdminAction()
         {
+            var client = new HttpClient();
+            var info = client.GetDiscoveryDocumentAsync("http://localhost/5000").Result;
+
+            var token = HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken).Result;
+            client.SetBearerToken(token);
+            var content = await client.GetStringAsync("http://localhost:5001/api/IdentityTest/get");
             return View();
         }
         [Authorize(Roles = "普通用户,管理员")]

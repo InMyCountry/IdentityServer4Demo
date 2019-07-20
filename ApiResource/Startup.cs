@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,16 +29,25 @@ namespace ApiResource
           .AddAuthorization()
           .AddJsonFormatters();
 
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
                     // IdentityServer的地址
                     options.Authority = "http://localhost:5000";
-                    // 不需要Https
-                    options.RequireHttpsMetadata = false;
-                    // 和资源名称相对应
-                    options.Audience = "api1";
+                    options.ApiName = "api1";
+                    options.ApiSecret = "api1 secret";
                 });
+
+            //services.AddAuthentication("Bearer")
+            //    .AddJwtBearer("Bearer", options =>
+            //    {
+            //        // IdentityServer的地址
+            //        options.Authority = "http://localhost:5000";
+            //        // 不需要Https
+            //        options.RequireHttpsMetadata = false;
+            //        // 和资源名称相对应
+            //        options.Audience = "api1";
+            //    });
 
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
